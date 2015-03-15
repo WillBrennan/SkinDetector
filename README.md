@@ -1,26 +1,10 @@
 # SkinDetector
 ============
-This is a python based skin detection system using OpenCV, 
+This is a high-speed python based skin detection system using OpenCV, it is done using adaptive thresholding, reference papers can be found below. It is designed for processing VGA sized images in real time for the [Gesture Control](https://github.com/WillBrennan/GestureControl) project.
 
 
 ## Quick Start
-Getting the app to run is pretty easy, just clone the repo, install requirements, and then run! This script
-will not install OpenCV, to do that, the following commands must be used, 
-
-```bash
- sudo apt-get install build-essential
-sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
-sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
-git clone https://github.com/Itseez/opencv.git
-~/opencv
-mkdir release
-cd release
-cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local ..
-make
-sudo make install
-```
-
-To install the rest of the project dependencies and run 
+Getting the app to run is pretty easy. This script will not [install OpenCV](http://docs.opencv.org/doc/tutorials/introduction/linux_install/linux_install.html). However to install the rest of the project dependencies and run the demo script use the following commands.
 
 ```bash
 # Clone the repo
