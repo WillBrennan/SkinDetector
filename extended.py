@@ -11,7 +11,7 @@ import logging
 # Custom Modules
 
 
-def get_logger(level=logging.INFO):
+def get_logger(level=logging.INFO, quite=False, debug=False, to_file=''):
     """
     This function initialises a logger to stdout.
 
@@ -19,12 +19,21 @@ def get_logger(level=logging.INFO):
     """
     assert level in [logging.DEBUG, logging.INFO, logging.WARNING, logging.CRITICAL]
     logger = logging.getLogger('main')
-    logger.setLevel(level=level)
     formatter = logging.Formatter('%(asctime)s - %(funcName)s - %(levelname)s - %(message)s')
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
+    if debug:
+        level = logging.DEBUG
+    logger.setLevel(level=level)
+    if not quite:
+        if to_file:
+            fh = logging.FileHandler(to_file)
+            fh.setLevel(level=level)
+            fh.setFormatter(formatter)
+            logger.addHandler(fh)
+        else:
+            ch = logging.StreamHandler()
+            ch.setLevel(level=level)
+            ch.setFormatter(formatter)
+            logger.addHandler(ch)
     return logger
 
 
