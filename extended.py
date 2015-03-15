@@ -53,6 +53,7 @@ def get_args(default=None, args_string=''):
     parser.add_argument('-q', '--quite', dest='quite', action='store_true', help='Disable all logging entirely')
     parser.add_argument('-d', '--display', dest='display', action='store_true', help="Display Game while learning and testing")
     parser.add_argument('-s', '--save', dest='save', action='store_true', help="If parsed saves the input image and mask with random file name, records name to logger")
+    parser.add_argument('-t', '--thresh', dest='thresh', default=0.5, type=float, help='thresholding for skin mask')
     if args_string:
         args_string = args_string.split(' ')
         args = parser.parse_args(args_string)
