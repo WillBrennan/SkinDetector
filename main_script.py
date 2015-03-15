@@ -9,7 +9,6 @@ import argparse
 # Standard Modules
 import cv2
 import numpy
-import cPickle
 # Custom Modules
 import extended
 
@@ -52,7 +51,7 @@ class SkinDetector(object):
         mask_a = cv2.inRange(img, lower_thresh, upper_thresh)
         mask_b = 255*((img[:, :, 2]-img[:, :, 1])/20)
         logger.debug('mask_b unique: {0}'.format(numpy.unique(mask_b)))
-        mask_c = 255*((numpy.max(img, axis=2)-numpy.min(img, axis=2))/15)
+        mask_c = 255*((numpy.max(img, axis=2)-numpy.min(img, axis=2))/20)
         logger.debug('mask_d unique: {0}'.format(numpy.unique(mask_c)))
         msk_rgb = cv2.bitwise_and(mask_a, mask_b)
         msk_rgb = cv2.bitwise_and(mask_c, msk_rgb)
