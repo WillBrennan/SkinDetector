@@ -1,6 +1,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*.pyc
 
 # C extensions
 *.so
@@ -21,6 +22,10 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+
+
+# Linux Temporary Files
+*~
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
