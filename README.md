@@ -1,5 +1,4 @@
 # SkinDetector
-============
 This is a high-speed python based skin detection system using OpenCV, it is done using adaptive thresholding, reference papers can be found below. It is designed for processing VGA sized images in real time for the [Gesture Control](https://github.com/WillBrennan/GestureControl) project.
 
 
