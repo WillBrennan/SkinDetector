@@ -22,7 +22,7 @@ class SkinDetector(object):
 
     @staticmethod
     def assert_image(img, grey=False):
-        logger.info('Applying assertions...')
+        logger.debug('Applying assertions...')
         depth = 3
         if grey:
             depth = 2
@@ -31,8 +31,8 @@ class SkinDetector(object):
         assert img.size > 100, 'seriously... you thought this would work?'
 
     def get_mask_hsv(self, img):
-        logger.info('Applying hsv threshold')
-        self.assert_image(image)
+        logger.debug('Applying hsv threshold')
+        self.assert_image(img)
         lower_thresh = numpy.array([100, 50, 0], dtype=numpy.uint8)
         upper_thresh = numpy.array([120, 150, 255], dtype=numpy.uint8)
         img_hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
@@ -45,7 +45,7 @@ class SkinDetector(object):
         self.add_mask(msk_hsv)
 
     def get_mask_rgb(self, img):
-        logger.info('Applying rgb thresholds')
+        logger.debug('Applying rgb thresholds')
         lower_thresh = numpy.array([45, 52, 108], dtype=numpy.uint8)
         upper_thresh = numpy.array([255, 255, 255], dtype=numpy.uint8)
         mask_a = cv2.inRange(img, lower_thresh, upper_thresh)
@@ -71,7 +71,7 @@ class SkinDetector(object):
         self.mask = numpy.zeros(img.shape[:2], dtype=numpy.uint8)
         self.get_mask_hsv(img)
         self.get_mask_rgb(img)
-        logger.info('Thresholding sum of masks')
+        logger.debug('Thresholding sum of masks')
         self.threshold(self.args.thresh)
         if self.args.debug:
             cv2.destroyAllWindows()
@@ -84,12 +84,12 @@ class SkinDetector(object):
         return self.mask
 
     def add_mask(self, img):
-        logger.info('normalising mask')
+        logger.debug('normalising mask')
         self.assert_image(img, grey=True)
         img[img < 128] = 0
         img[img >= 128] = 1
         logger.debug('normalisation complete')
-        logger.info('adding mask to total mask')
+        logger.debug('adding mask to total mask')
         self.mask += img
         self.n_mask += 1
         logger.debug('add mask complete')
@@ -112,13 +112,13 @@ class SkinDetector(object):
         self.assert_image(img)
         if self.args.debug:
             cv2.imshow('input image', img)
-        logger.info('Normalising brightness and contrast')
+        logger.debug('Normalising brightness and contrast')
         kernel1 = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
         div = numpy.float32(img)/(cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel1))
         image = numpy.uint8(cv2.normalize(div, div, 0, 255, cv2.NORM_MINMAX))
         if self.args.debug:
             cv2.imshow('normalised brightness', image)
-        logger.info('Applying Bilateral Filter')
+        logger.debug('Applying Bilateral Filter')
         if self.args.debug:
             cv2.imshow('reduced noise', image)
         if self.args.debug:
@@ -142,6 +142,13 @@ if __name__ == '__main__':
     args = extended.get_args()
     logger = extended.get_logger(quite=args.quite, debug=args.debug)
     args.image_paths = extended.find_images(args.image_paths[0])
+    print args.image_paths[-1]
     for image_path in args.image_paths:
-        image = cv2.imread(image_path, 1)
-        process(image, args=args)
+        img_col = cv2.imread(image_path, 1)
+        img_msk = process(img_col, args=args)
+        if not args.display:
+            cv2.destroyAllWindows()
+            cv2.imshow('img_col', img_col)
+            cv2.imshow('img_msk', img_msk)
+            cv2.imshow('img_skn', cv2.bitwise_and(img_col, img_col, mask=img_msk))
+            cv2.waitKey(0)

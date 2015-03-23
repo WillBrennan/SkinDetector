@@ -11,7 +11,7 @@ git clone https://github.com/WillBrennan/SkinDetector && cd SkinDetector
 # Install requirements
 python setup.py install
 # Run the bot
-python main.py
+python main.py <directory of images> --display
 ```
 ## Usage
 Usage of this as  a submodule is simple, just clone into your projects directory (or preferably add as a git submodule), and your ready to go. Below
