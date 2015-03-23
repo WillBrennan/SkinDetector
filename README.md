@@ -32,5 +32,8 @@ cv2.imshow("mask", mask)
 cv2.waitKey(0)
 ```
 
+## Demonstration
+![Demo on Astronaught](https://raw.githubusercontent.com/WillBrennan/SkinDetector/master/demo.png "Demonstration")
+
 ## References
 
