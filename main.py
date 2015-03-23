@@ -62,6 +62,13 @@ class SkinDetector(object):
             cv2.waitKey(0)
         self.add_mask(msk_rgb)
 
+    @staticmethod
+    def closing(msk):
+        assert isinstance(msk, numpy.ndarray), 'msk must be a numpy array'
+        assert msk.ndim == 2, 'msk must be a greyscale image'
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+        return cv2.morphologyEx(msk, cv2.MORPH_CLOSE, kernel)
+
     def process(self, img):
         logger.debug('Initialising process')
         dt = time.time()
@@ -81,6 +88,7 @@ class SkinDetector(object):
         dt = round(time.time()-dt, 2)
         hz = round(1/dt, 2)
         logger.debug('Conducted processing in {0}s ({1}Hz)'.format(dt, hz))
+        self.mask = self.closing(self.mask)
         return self.mask
 
     def add_mask(self, img):
