@@ -67,7 +67,10 @@ class SkinDetector(object):
         assert isinstance(msk, numpy.ndarray), 'msk must be a numpy array'
         assert msk.ndim == 2, 'msk must be a greyscale image'
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-        return cv2.morphologyEx(msk, cv2.MORPH_CLOSE, kernel)
+        msk = cv2.morphologyEx(msk, cv2.MORPH_CLOSE, kernel)
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+        msk = cv2.morphologyEx(msk, cv2.MORPH_OPEN, kernel, iterations=2)
+        return msk
 
     def process(self, img):
         logger.debug('Initialising process')
@@ -150,7 +153,6 @@ if __name__ == '__main__':
     args = extended.get_args()
     logger = extended.get_logger(quite=args.quite, debug=args.debug)
     args.image_paths = extended.find_images(args.image_paths[0])
-    print args.image_paths[-1]
     for image_path in args.image_paths:
         img_col = cv2.imread(image_path, 1)
         img_msk = process(img_col, args=args)
