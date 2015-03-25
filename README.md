@@ -32,8 +32,10 @@ cv2.imshow("mask", mask)
 cv2.waitKey(0)
 ```
 
+## References
+[Skin Segementation Using Multiple Thresholds](http://www.ivl.disco.unimib.it/papers2003/EI06-EI109%20Skin-paper.pdf)
+
+
 ## Demonstration
 ![Demo on Astronaught](https://raw.githubusercontent.com/WillBrennan/SkinDetector/master/demo.png "Demonstration")
-
-## References
 
