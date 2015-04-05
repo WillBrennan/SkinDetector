@@ -11,6 +11,7 @@ import cv2
 import numpy
 # Custom Modules
 import scripts
+import mean_color
 
 
 class SkinDetector(object):
@@ -76,6 +77,9 @@ class SkinDetector(object):
         logger.debug('Initialising process')
         dt = time.time()
         self.assert_image(img)
+        logger.debug('Generating mean-color image')
+        #img = mean_color.img_mean(img)
+        logger.debug('Conducting thresholding')
         self.n_mask = 0
         self.mask = numpy.zeros(img.shape[:2], dtype=numpy.uint8)
         self.get_mask_hsv(img)
