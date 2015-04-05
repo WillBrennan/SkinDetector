@@ -9,6 +9,8 @@ import sys
 import argparse
 import logging
 # Standard Modules
+import cv2
+import numpy
 # Custom Modules
 
 
@@ -88,3 +90,12 @@ def xfind_images(directory, recursive=False, ignore=True):
         check_b = ignore or ('-' not in path_a.split('/')[-1])
         if check_a and check_b:
             yield path_a
+
+
+def display(title, img, max_size=200000):
+    assert isinstance(img, numpy.ndarray), 'img must be a numpy array'
+    assert isinstance(title, str), 'title must be a string'
+    scale = numpy.sqrt(min(1.0, float(max_size)/(img.shape[0]*img.shape[1])))
+    shape = (int(scale*img.shape[1]), int(scale*img.shape[0]))
+    img = cv2.resize(img, shape)
+    cv2.imshow(title, img)
