@@ -147,7 +147,7 @@ if __name__ == '__main__':
         img_col = cv2.imread(image_path, 1)
         img_msk = process(img_col, args=args)
         if not args.display:
-            cv2.imshow('img_col', img_col)
-            cv2.imshow('img_msk', img_msk)
-            cv2.imshow('img_skn', cv2.bitwise_and(img_col, img_col, mask=img_msk))
+            scripts.display('img_col', img_col)
+            scripts.display('img_msk', img_msk)
+            scripts.display('img_skn', cv2.bitwise_and(img_col, img_col, mask=img_msk))
             cv2.waitKey(0)
