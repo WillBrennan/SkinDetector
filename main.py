@@ -117,24 +117,6 @@ class SkinDetector(object):
         logger.debug('{0}% of the image is skin'.format(int((100.0/255.0)*numpy.sum(self.mask)/(self.mask.size))))
         return self.mask
 
-    def normalise(self, img):
-        # todo: this currently messes up with color images
-        self.assert_image(img)
-        if self.args.debug:
-            cv2.imshow('input image', img)
-        logger.debug('Normalising brightness and contrast')
-        kernel1 = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-        div = numpy.float32(img)/(cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel1))
-        image = numpy.uint8(cv2.normalize(div, div, 0, 255, cv2.NORM_MINMAX))
-        if self.args.debug:
-            cv2.imshow('normalised brightness', image)
-        logger.debug('Applying Bilateral Filter')
-        if self.args.debug:
-            cv2.imshow('reduced noise', image)
-        if self.args.debug:
-            cv2.waitKey(0)
-        return image
-
 
 def process(image, save=False, display=False, args=None):
     assert isinstance(image, numpy.ndarray)
