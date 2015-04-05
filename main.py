@@ -77,7 +77,6 @@ class SkinDetector(object):
         dt = time.time()
         self.assert_image(img)
         self.n_mask = 0
-        #image = self.normalise(image)
         self.mask = numpy.zeros(img.shape[:2], dtype=numpy.uint8)
         self.get_mask_hsv(img)
         self.get_mask_rgb(img)
