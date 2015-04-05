@@ -10,7 +10,7 @@ import argparse
 import cv2
 import numpy
 # Custom Modules
-import extended
+import scripts
 
 
 class SkinDetector(object):
@@ -140,7 +140,7 @@ class SkinDetector(object):
 def process(image, save=False, display=False, args=None):
     assert isinstance(image, numpy.ndarray)
     if not args:
-        args = extended.gen_args()
+        args = scripts.gen_args()
     else:
         assert isinstance(args, argparse.Namespace), 'args must be an argparse.Namespace'
     args.save = save
@@ -150,9 +150,9 @@ def process(image, save=False, display=False, args=None):
 
 
 if __name__ == '__main__':
-    args = extended.get_args()
-    logger = extended.get_logger(quite=args.quite, debug=args.debug)
-    args.image_paths = extended.find_images(args.image_paths[0])
+    args = scripts.get_args()
+    logger = scripts.get_logger(quite=args.quite, debug=args.debug)
+    args.image_paths = scripts.find_images(args.image_paths[0])
     for image_path in args.image_paths:
         img_col = cv2.imread(image_path, 1)
         img_msk = process(img_col, args=args)

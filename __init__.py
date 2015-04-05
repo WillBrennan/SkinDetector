@@ -7,4 +7,4 @@ __author__ = 'Will Brennan'
 # Standard Modules
 # Custom Modules
 from main import *
-import extended
+import scripts
