@@ -34,15 +34,13 @@ class SkinDetector(object):
     def get_mask_hsv(self, img):
         logger.debug('Applying hsv threshold')
         self.assert_image(img)
-        lower_thresh = numpy.array([100, 50, 0], dtype=numpy.uint8)
+        lower_thresh = numpy.array([0, 50, 0], dtype=numpy.uint8)
         upper_thresh = numpy.array([120, 150, 255], dtype=numpy.uint8)
         img_hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
         msk_hsv = cv2.inRange(img_hsv, lower_thresh, upper_thresh)
         if self.args.debug:
-            cv2.destroyAllWindows()
-            cv2.imshow('input', img)
-            cv2.imshow('mask', msk_hsv)
-            cv2.waitKey(0)
+            scripts.display('input', img)
+            scripts.display('mask_hsv', msk_hsv)
         self.add_mask(msk_hsv)
 
     def get_mask_rgb(self, img):
@@ -57,11 +55,20 @@ class SkinDetector(object):
         msk_rgb = cv2.bitwise_and(mask_a, mask_b)
         msk_rgb = cv2.bitwise_and(mask_c, msk_rgb)
         if self.args.debug:
-            cv2.destroyAllWindows()
-            cv2.imshow('input', img)
-            cv2.imshow('mask', msk_rgb)
-            cv2.waitKey(0)
+            scripts.display('input', img)
+            scripts.display('mask_rgb', msk_rgb)
         self.add_mask(msk_rgb)
+
+    def get_mask_yuv(self, img):
+        self.assert_image(img)
+        lower_thresh = numpy.array([65, 85, 85], dtype=numpy.uint8)
+        upper_thresh = numpy.array([170, 140, 160], dtype=numpy.uint8)
+        img_yuv = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
+        msk_yuv = cv2.inRange(img_yuv, lower_thresh, upper_thresh)
+        if self.args.debug:
+            scripts.display('input', img)
+            scripts.display('mask_yuv', msk_yuv)
+        self.add_mask(msk_yuv)
 
     @staticmethod
     def closing(msk):
@@ -84,6 +91,7 @@ class SkinDetector(object):
         self.mask = numpy.zeros(img.shape[:2], dtype=numpy.uint8)
         self.get_mask_hsv(img)
         self.get_mask_rgb(img)
+        self.get_mask_yuv(img)
         logger.debug('Thresholding sum of masks')
         self.threshold(self.args.thresh)
         if self.args.debug:
@@ -114,7 +122,6 @@ class SkinDetector(object):
         assert self.n_mask > 0, 'Number of masks must be greater than 0 [n_mask ({0}) = {1}]'.format(type(self.n_mask), self.n_mask)
         logger.debug('Threshold Value - {0}%'.format(int(100*threshold)))
         logger.debug('Number of Masks - {0}'.format(self.n_mask))
-        threshold *= self.n_mask
         self.mask /= self.n_mask
         self.mask[self.mask < threshold] = 0
         self.mask[self.mask >= threshold] = 255
