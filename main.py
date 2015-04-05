@@ -59,16 +59,16 @@ class SkinDetector(object):
             scripts.display('mask_rgb', msk_rgb)
         self.add_mask(msk_rgb)
 
-    def get_mask_yuv(self, img):
+    def get_mask_ycrcb(self, img):
         self.assert_image(img)
-        lower_thresh = numpy.array([65, 85, 85], dtype=numpy.uint8)
-        upper_thresh = numpy.array([170, 140, 160], dtype=numpy.uint8)
-        img_yuv = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
-        msk_yuv = cv2.inRange(img_yuv, lower_thresh, upper_thresh)
+        lower_thresh = numpy.array([90, 100, 130], dtype=numpy.uint8)
+        upper_thresh = numpy.array([230, 120, 180], dtype=numpy.uint8)
+        img_ycrcb = cv2.cvtColor(img, cv2.COLOR_RGB2YCR_CB)
+        msk_ycrcb = cv2.inRange(img_ycrcb, lower_thresh, upper_thresh)
         if self.args.debug:
             scripts.display('input', img)
-            scripts.display('mask_yuv', msk_yuv)
-        self.add_mask(msk_yuv)
+            scripts.display('mask_ycrcb', msk_ycrcb)
+        self.add_mask(msk_ycrcb)
 
     @staticmethod
     def closing(msk):
@@ -91,14 +91,12 @@ class SkinDetector(object):
         self.mask = numpy.zeros(img.shape[:2], dtype=numpy.uint8)
         self.get_mask_hsv(img)
         self.get_mask_rgb(img)
-        self.get_mask_yuv(img)
+        self.get_mask_ycrcb(img)
         logger.debug('Thresholding sum of masks')
         self.threshold(self.args.thresh)
         if self.args.debug:
-            cv2.destroyAllWindows()
             cv2.imshow('skin_mask', self.mask)
             cv2.imshow('input_img', img)
-            cv2.waitKey(0)
         dt = round(time.time()-dt, 2)
         hz = round(1/dt, 2)
         logger.debug('Conducted processing in {0}s ({1}Hz)'.format(dt, hz))
@@ -149,7 +147,6 @@ if __name__ == '__main__':
         img_col = cv2.imread(image_path, 1)
         img_msk = process(img_col, args=args)
         if not args.display:
-            cv2.destroyAllWindows()
             cv2.imshow('img_col', img_col)
             cv2.imshow('img_msk', img_msk)
             cv2.imshow('img_skn', cv2.bitwise_and(img_col, img_col, mask=img_msk))
