@@ -11,6 +11,7 @@ import cv2
 import numpy
 # Custom Modules
 import scripts
+import SpeedySuperPixels
 import mean_color
 
 
@@ -127,7 +128,7 @@ class SkinDetector(object):
         return self.mask
 
 
-def process(image, save=False, display=False, args=None):
+def process(image, save=False, display=False, args=None, segment=False):
     assert isinstance(image, numpy.ndarray)
     if not args:
         args = scripts.gen_args()
@@ -136,7 +137,12 @@ def process(image, save=False, display=False, args=None):
     args.save = save
     args.display = display
     detector = SkinDetector(args)
-    return detector.process(image)
+    if segment:
+        slic = SpeedySuperPixels.
+        contours =
+        pass
+    else:
+        return detector.process(image)
 
 
 if __name__ == '__main__':
