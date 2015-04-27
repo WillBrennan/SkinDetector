@@ -12,7 +12,6 @@ import numpy
 # Custom Modules
 import scripts
 import SpeedySuperPixels
-import mean_color
 
 
 class SkinDetector(object):
