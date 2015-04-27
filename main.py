@@ -138,9 +138,15 @@ def process(image, save=False, display=False, args=None, segment=False):
     args.display = display
     detector = SkinDetector(args)
     if segment:
-        slic = SpeedySuperPixels.
-        contours =
-        pass
+        slic = SpeedySuperPixels.SuperContour()
+        skin = numpy.zeros(image.shape, dtype=image.dtype)
+        for roi, contour in slic.process(image):
+            pxl = cv2.bitwise_and(image, image, mask=contour)
+            msk = detector.process(pxl)
+            ret = msk.sum()/contour.sum()
+            if ret > 0.8:
+                skin = numpy.min(255, cv2.add(skin, contour))
+        return skin
     else:
         return detector.process(image)
 
