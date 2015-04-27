@@ -21,22 +21,34 @@ class SuperContour(object):
 
     def grid_contours(self, frame, contours, heir):
         result_cont, result_heir, result_rois = [], [], []
-
-        # todo: mix grid with contours to form super pixels!
-        # todo: remove any regions of overlap!
-
-        logger.debug('checking and removing overlap...')
-        msk_all = numpy.zeros(frame.shape[:2], dtype=frame.dtype)
+        logger.debug('segmenting contours with grid')
         for contour in contours:
             msk = numpy.zeros(frame.shape, dtype=frame.dtype)
             cv2.drawContours(msk, [contour], -1, 255, -1)
+            bbox = cv2.boundingRect(contour)
+            w0, h0 = bbox[0]//self.width, bbox[1]//self.width
+            n_w = max(1, ((bbox[0]+bbox[2])//self.width) - w0)
+            n_h = max(1, ((bbox[1]+bbox[3])//self.width) - h0)
+            for i in range(n_w):
+                for j in range(n_h):
+                    grid_msk = numpy.zeros(frame.shape, dtype=frame.dtype)
+                    grid_box = numpy.array([[], [], [], []], dtype=numpy.uint8)
+                    cv2.drawContours(grid_msk, [grid_box], -1, 255, -1)
+                    grid_msk = cv2.bitwise_and(grid_msk, msk)
+                    result_cont.append(grid_msk)
+                    # todo: work out stats of new contour!
+        # todo: mix grid with contours to form super pixels!
+        contours = result_cont
+        logger.debug('checking and removing overlap...')
+        msk_all = numpy.zeros(frame.shape[:2], dtype=frame.dtype)
+        for msk in contours:
             msk = cv2.bitwise_and(msk, cv2.bitwise_not(msk_all))
             if msk.sum() != 0:
                 result_cont.append(msk)
                 msk_all = numpy.min(255, cv2.add(msk_all, msk))
         logger.debug('grid contours complete')
-        result_heir = heir
-        return result_cont, result_heir, result_rois
+        contours = result_cont
+        return contours, heir, rois
 
     def process(self, frame):
         frame_gry = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
