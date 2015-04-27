@@ -32,7 +32,11 @@ class SuperContour(object):
             for i in range(n_w):
                 for j in range(n_h):
                     grid_msk = numpy.zeros(frame.shape, dtype=frame.dtype)
-                    grid_box = numpy.array([[], [], [], []], dtype=numpy.uint8)
+                    grid_box = numpy.array([[(w0+i)*self.width, (h0+j)*self.width],
+                                            [(w0+i+1)*self.width, (h0+j)*self.width],
+                                            [(w0+i)*self.width, (h0+j+1)*self.width],
+                                            [(w0+i+1)*self.width, (h0+j+1)*self.width]],
+                                           dtype=numpy.uint8)
                     cv2.drawContours(grid_msk, [grid_box], -1, 255, -1)
                     grid_msk = cv2.bitwise_and(grid_msk, msk)
                     result_cont.append(grid_msk)
