@@ -40,7 +40,7 @@ def get_logger(level=logging.INFO, quite=False, debug=False, to_file=''):
     return logger
 
 
-def get_args(default=None, args_string=''):
+def get_args(default=None, args_string='', from_file=True):
     """
     This function gets the command line arguments and passes any unknown arguments to ALE.
     :param default: dictionary of default arguments with keys as `dest`
@@ -49,7 +49,8 @@ def get_args(default=None, args_string=''):
     if not default:
         default = {}
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('image_paths', type=str, nargs='+', help="Filepath for input images or folder containing images")
+    if from_file:
+        parser.add_argument('image_paths', type=str, nargs='+', help="Filepath for input images or folder containing images")
     parser.add_argument('-n', '--name', dest='name', default='DEFAULT_NAME', type=str, help='Basename of all export files')
     parser.add_argument('-b', '--debug', dest='debug', action='store_true', help='Lower logging level to debug')
     parser.add_argument('-q', '--quite', dest='quite', action='store_true', help='Disable all logging entirely')
