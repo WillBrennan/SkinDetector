@@ -6,12 +6,15 @@ __author__ = 'Will Brennan'
 # Built-in Modules
 import time
 import argparse
+import logging
 # Standard Modules
 import cv2
 import numpy
 # Custom Modules
 import scripts
 import SpeedySuperPixels
+
+logger = logging.getLogger('main')
 
 
 class SkinDetector(object):
@@ -70,6 +73,30 @@ class SkinDetector(object):
             scripts.display('mask_ycrcb', msk_ycrcb)
         self.add_mask(msk_ycrcb)
 
+    def grab_cut_mask(self, img_col, mask):
+        kernel = numpy.ones((50, 50), numpy.float32)/(50*50)
+        dst = cv2.filter2D(mask, -1, kernel)
+        dst[dst != 0] = 255
+        free = numpy.array(cv2.bitwise_not(dst), dtype=numpy.uint8)
+        if self.args.debug:
+            cv2.imshow('not skin', free)
+            cv2.imshow('grabcut input', mask)
+        grab_mask = numpy.zeros(mask.shape, dtype=numpy.uint8)
+        grab_mask[:, :] = 2
+        grab_mask[mask == 255] = 1
+        grab_mask[free == 255] = 0
+        print numpy.unique(grab_mask)
+        if numpy.unique(grab_mask).tolist() == [0, 1]:
+            logger.debug('conducting grabcut')
+            bgdModel = numpy.zeros((1, 65), numpy.float64)
+            fgdModel = numpy.zeros((1, 65), numpy.float64)
+            if img_col.size != 0:
+                mask, bgdModel, fgdModel = cv2.grabCut(img_col, grab_mask, None, bgdModel, fgdModel, 5, cv2.GC_INIT_WITH_MASK)
+                mask = numpy.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
+            else:
+                logger.warning('img_col is empty')
+        return mask
+
     @staticmethod
     def closing(msk):
         assert isinstance(msk, numpy.ndarray), 'msk must be a numpy array'
@@ -89,9 +116,9 @@ class SkinDetector(object):
         logger.debug('Conducting thresholding')
         self.n_mask = 0
         self.mask = numpy.zeros(img.shape[:2], dtype=numpy.uint8)
-        self.get_mask_hsv(img)
+        #self.get_mask_hsv(img)
         self.get_mask_rgb(img)
-        self.get_mask_ycrcb(img)
+        #self.get_mask_ycrcb(img)
         logger.debug('Thresholding sum of masks')
         self.threshold(self.args.thresh)
         if self.args.debug:
@@ -101,6 +128,7 @@ class SkinDetector(object):
         hz = round(1/dt, 2)
         logger.debug('Conducted processing in {0}s ({1}Hz)'.format(dt, hz))
         self.mask = self.closing(self.mask)
+        self.mask = self.grab_cut_mask(img, self.mask)
         return self.mask
 
     def add_mask(self, img):
@@ -161,4 +189,4 @@ if __name__ == '__main__':
             scripts.display('img_col', img_col)
             scripts.display('img_msk', img_msk)
             scripts.display('img_skn', cv2.bitwise_and(img_col, img_col, mask=img_msk))
-            cv2.waitKey(0)
+            cv2.waitKey(1)
