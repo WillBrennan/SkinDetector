@@ -1,4 +1,6 @@
 # SkinDetector
+[![Build Status](https://travis-ci.org/WillBrennan/SkinDetector.svg?branch=master)](https://travis-ci.org/WillBrennan/SkinDetector)
+
 This is a high-speed python based skin detection system using OpenCV, it is done using adaptive thresholding, reference
 papers can be found below. It is designed for processing VGA sized images in real time for Gesture Control.
 
