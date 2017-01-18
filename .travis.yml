@@ -4,6 +4,7 @@ before_script:
   - pip install -U pytest
   - sudo apt-get update -qq
   - sudo apt-get install -yq python-opencv
+  - python -c "import cv2; print cv2.__version__"
 
 matrix:
   include:
