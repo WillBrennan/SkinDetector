@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Will Brennan'
 
-
 # Built-in Modules
 import time
 import argparse
@@ -11,14 +10,15 @@ import logging
 import cv2
 import numpy
 # Custom Modules
+import scripts
 
 logger = logging.getLogger('main')
 
 
 class SkinDetector(object):
-    def __init__(self, args):
-        assert isinstance(args, argparse.Namespace), 'args must be of type argparse.Namespace'
-        self.args = args
+    def __init__(self, thresh=0.5, debug=False):
+        self.debug = debug
+        self.thresh = thresh
         self.mask = None
         logger.debug('SkinDetector initialised')
 
@@ -39,7 +39,7 @@ class SkinDetector(object):
         upper_thresh = numpy.array([120, 150, 255], dtype=numpy.uint8)
         img_hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
         msk_hsv = cv2.inRange(img_hsv, lower_thresh, upper_thresh)
-        if self.args.debug:
+        if self.debug:
             scripts.display('input', img)
             scripts.display('mask_hsv', msk_hsv)
         self.add_mask(msk_hsv)
@@ -49,13 +49,13 @@ class SkinDetector(object):
         lower_thresh = numpy.array([45, 52, 108], dtype=numpy.uint8)
         upper_thresh = numpy.array([255, 255, 255], dtype=numpy.uint8)
         mask_a = cv2.inRange(img, lower_thresh, upper_thresh)
-        mask_b = 255*((img[:, :, 2]-img[:, :, 1])/20)
+        mask_b = 255 * ((img[:, :, 2] - img[:, :, 1]) / 20)
         logger.debug('mask_b unique: {0}'.format(numpy.unique(mask_b)))
-        mask_c = 255*((numpy.max(img, axis=2)-numpy.min(img, axis=2))/20)
+        mask_c = 255 * ((numpy.max(img, axis=2) - numpy.min(img, axis=2)) / 20)
         logger.debug('mask_d unique: {0}'.format(numpy.unique(mask_c)))
         msk_rgb = cv2.bitwise_and(mask_a, mask_b)
         msk_rgb = cv2.bitwise_and(mask_c, msk_rgb)
-        if self.args.debug:
+        if self.debug:
             scripts.display('input', img)
             scripts.display('mask_rgb', msk_rgb)
         self.add_mask(msk_rgb)
@@ -66,30 +66,30 @@ class SkinDetector(object):
         upper_thresh = numpy.array([230, 120, 180], dtype=numpy.uint8)
         img_ycrcb = cv2.cvtColor(img, cv2.COLOR_RGB2YCR_CB)
         msk_ycrcb = cv2.inRange(img_ycrcb, lower_thresh, upper_thresh)
-        if self.args.debug:
+        if self.debug:
             scripts.display('input', img)
             scripts.display('mask_ycrcb', msk_ycrcb)
         self.add_mask(msk_ycrcb)
 
     def grab_cut_mask(self, img_col, mask):
-        kernel = numpy.ones((50, 50), numpy.float32)/(50*50)
+        kernel = numpy.ones((50, 50), numpy.float32) / (50 * 50)
         dst = cv2.filter2D(mask, -1, kernel)
         dst[dst != 0] = 255
         free = numpy.array(cv2.bitwise_not(dst), dtype=numpy.uint8)
-        if self.args.debug:
+        if self.debug:
             scripts.display('not skin', free)
             scripts.display('grabcut input', mask)
         grab_mask = numpy.zeros(mask.shape, dtype=numpy.uint8)
         grab_mask[:, :] = 2
         grab_mask[mask == 255] = 1
         grab_mask[free == 255] = 0
-        print numpy.unique(grab_mask)
         if numpy.unique(grab_mask).tolist() == [0, 1]:
             logger.debug('conducting grabcut')
             bgdModel = numpy.zeros((1, 65), numpy.float64)
             fgdModel = numpy.zeros((1, 65), numpy.float64)
             if img_col.size != 0:
-                mask, bgdModel, fgdModel = cv2.grabCut(img_col, grab_mask, None, bgdModel, fgdModel, 5, cv2.GC_INIT_WITH_MASK)
+                mask, bgdModel, fgdModel = cv2.grabCut(img_col, grab_mask, None, bgdModel, fgdModel, 5,
+                                                       cv2.GC_INIT_WITH_MASK)
                 mask = numpy.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
             else:
                 logger.warning('img_col is empty')
@@ -118,12 +118,12 @@ class SkinDetector(object):
         self.get_mask_rgb(img)
         self.get_mask_ycrcb(img)
         logger.debug('Thresholding sum of masks')
-        self.threshold(self.args.thresh)
-        if self.args.debug:
+        self.threshold(self.thresh)
+        if self.debug:
             scripts.display('skin_mask', self.mask)
             scripts.display('input_img', img)
-        dt = round(time.time()-dt, 2)
-        hz = round(1/dt, 2)
+        dt = round(time.time() - dt, 2)
+        hz = round(1 / dt, 2)
         logger.debug('Conducted processing in {0}s ({1}Hz)'.format(dt, hz))
         self.mask = self.closing(self.mask)
         self.mask = self.grab_cut_mask(img, self.mask)
@@ -143,11 +143,12 @@ class SkinDetector(object):
     def threshold(self, threshold):
         assert isinstance(threshold, float), 'threshold must be a float (current type - {0})'.format(type(threshold))
         assert 0 <= threshold <= 1, 'threshold must be between 0 & 1 (current value - {0})'.format(threshold)
-        assert self.n_mask > 0, 'Number of masks must be greater than 0 [n_mask ({0}) = {1}]'.format(type(self.n_mask), self.n_mask)
-        logger.debug('Threshold Value - {0}%'.format(int(100*threshold)))
+        assert self.n_mask > 0, 'Number of masks must be greater than 0 [n_mask ({0}) = {1}]'.format(
+            type(self.n_mask), self.n_mask)
+        logger.debug('Threshold Value - {0}%'.format(int(100 * threshold)))
         logger.debug('Number of Masks - {0}'.format(self.n_mask))
         self.mask /= self.n_mask
         self.mask[self.mask < threshold] = 0
         self.mask[self.mask >= threshold] = 255
-        logger.debug('{0}% of the image is skin'.format(int((100.0/255.0)*numpy.sum(self.mask)/(self.mask.size))))
+        logger.debug('{0}% of the image is skin'.format(int((100.0 / 255.0) * numpy.sum(self.mask) / (self.mask.size))))
         return self.mask

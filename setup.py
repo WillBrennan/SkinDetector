@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Will Brennan'
 
-
 # Built-in Modules
 # Standard Modules
 # Custom Modules
-
 """
 Will automatically ensure that all build prerequisites are available
 via ez_setup.
@@ -25,5 +23,4 @@ setup(
     author='Will Brennan',
     author_email='william.brennan@skytales.com',
     license='GPL',
-    install_requires=["numpy"],
-)
+    install_requires=["numpy"], )
