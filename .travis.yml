@@ -17,6 +17,7 @@ matrix:
     - python: "3.7"
     - python: "nightly"
   allow_failures:
+    - python: "3.2"
     - python: "3.5-dev"
     - python: "3.6"
     - python: "3.6-dev"
