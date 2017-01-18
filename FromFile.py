@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Will Brennan'
 
-
 # Built-in Modules
 import os
 import argparse
@@ -25,7 +24,7 @@ def find_images(path, recursive=False, ignore=True):
         assert isinstance(recursive, bool), 'FileIO - get_images: recursive must be a boolean variable'
         ext, result = ['png', 'jpg', 'jpeg'], []
         for path_a in os.listdir(path):
-            path_a = path + '/' +path_a
+            path_a = path + '/' + path_a
             if os.path.isdir(path_a) and recursive:
                 for path_b in find_images(path_a):
                     yield path_b
@@ -35,6 +34,7 @@ def find_images(path, recursive=False, ignore=True):
                 yield path_a
     else:
         raise ValueError('error! path is not a valid path or directory')
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
@@ -46,19 +46,13 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--thresh', dest='thresh', default=0.5, type=float, help='threshold for skin mask')
     args = parser.parse_args()
 
-    logger = logging.getLogger('main')
-    if not args.quite:
-        if args.debug:
-            level = logging.DEBUG
-        else:
-            level = logging.INFO
-        ch = logging.StreamHandler()
-        ch.setLevel(level=level)
-        formatter = logging.Formatter('%(asctime)s - %(funcName)s - %(levelname)s - %(message)s')
-        ch.setFormatter(formatter)
-        logger.addHandler(ch)
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger("main")
 
-    detector = SkinDetector(args)
+    detector = SkinDetector(thresh=args.thresh, debug=args.debug)
 
     for image_arg in args.image_paths:
         for image_path in find_images(image_arg):
