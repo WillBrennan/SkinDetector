@@ -5,11 +5,10 @@ __author__ = 'Will Brennan'
 # Built-in Modules
 import argparse
 import logging
-# Standard Modules
+
 import cv2
-# Custom Modules
-import scripts
-from SkinDetector import SkinDetector
+
+from SkinDetector import SkinDetector, scripts
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)

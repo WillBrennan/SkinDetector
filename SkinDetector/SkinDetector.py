@@ -3,13 +3,12 @@
 __author__ = 'Will Brennan'
 
 # Built-in Modules
-import time
-import argparse
 import logging
-# Standard Modules
+import time
+
 import cv2
 import numpy
-# Custom Modules
+
 import scripts
 
 logger = logging.getLogger('main')

@@ -1,0 +1,31 @@
+language: python
+
+before_script:
+  - pip install -U pytest
+
+matrix:
+  include:
+    - python: "2.6"
+    - python: "2.7"
+    - python: "3.2"
+    - python: "3.3"
+    - python: "3.4"
+    - python: "3.5"
+    - python: "3.5-dev"
+    - python: "3.6"
+    - python: "3.6-dev"
+    - python: "3.7"
+    - python: "nightly"
+  allow_failures:
+    - python: "3.2"
+    - python: "3.5-dev"
+    - python: "3.6"
+    - python: "3.6-dev"
+    - python: "3.7"
+    - python: "nightly"
+
+install: "pip install -r requirements.txt"
+script:
+  - uname -a
+  - pytest --version
+  - pytest
