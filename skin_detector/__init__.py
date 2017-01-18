@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'willbrennan'
 
-from SkinDetector import SkinDetector
+from skin_detector import process
 from scripts import display
 
-__all__ = ["SkinDetector", "display"]
+__all__ = ["process", "display"]

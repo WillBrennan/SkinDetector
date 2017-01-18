@@ -2,14 +2,11 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Will Brennan'
 
-# Built-in Modules
 import argparse
 import logging
 import os
-
 import cv2
-
-from SkinDetector import SkinDetector, scripts
+import skin_detector
 
 logger = logging.getLogger('main')
 
@@ -50,17 +47,15 @@ if __name__ == '__main__':
         logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger("main")
 
-    detector = SkinDetector(thresh=args.thresh, debug=args.debug)
-
     for image_arg in args.image_paths:
         for image_path in find_images(image_arg):
             logging.info("loading image from {0}".format(image_path))
             img_col = cv2.imread(image_path, 1)
 
-            img_msk = detector.process(img_col)
+            img_msk = skin_detector.process(img_col)
 
             if args.display:
-                scripts.display('img_col', img_col)
-                scripts.display('img_msk', img_msk)
-                scripts.display('img_skn', cv2.bitwise_and(img_col, img_col, mask=img_msk))
+                skin_detector.scripts.display('img_col', img_col)
+                skin_detector.scripts.display('img_msk', img_msk)
+                skin_detector.scripts.display('img_skn', cv2.bitwise_and(img_col, img_col, mask=img_msk))
                 cv2.waitKey(0)

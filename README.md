@@ -10,20 +10,19 @@ However to install the rest of the project dependencies and run the demo script 
 ```bash
 # Clone the repo
 git clone https://github.com/WillBrennan/SkinDetector && cd SkinDetector
-# Install requirements
-python setup.py install
-# Run the bot
+make install
 python FromFile.py <directory of images> --display
 ```
+
 ## Usage
 
 ```python
 import cv2
-import SkinDetector
+import skin_detector
 
 img_path = raw_input("Please Enter Image Path")
 image = cv2.imread(img_path)
-mask = SkinDetector.process(image)
+mask = skin_detector.process(image)
 cv2.imshow("input", image)
 cv2.imshow("mask", mask)
 cv2.waitKey(0)

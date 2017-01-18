@@ -2,13 +2,10 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Will Brennan'
 
-# Built-in Modules
 import argparse
 import logging
-
 import cv2
-
-from SkinDetector import SkinDetector, scripts
+import skin_detector
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
@@ -22,18 +19,16 @@ if __name__ == '__main__':
         logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger("main")
 
-    detector = SkinDetector(thresh=args.thresh, debug=args.debug)
-
     cam = cv2.VideoCapture(0)
     logging.info("press any key to exit")
 
     while True:
         ret, img_col = cam.read()
-        img_msk = detector.process(img_col)
+        img_msk = skin_detector.process(img_col)
 
-        scripts.display('img_col', img_col)
-        scripts.display('img_msk', img_msk)
-        scripts.display('img_skn', cv2.bitwise_and(img_col, img_col, mask=img_msk))
+        skin_detector.scripts.display('img_col', img_col)
+        skin_detector.scripts.display('img_msk', img_msk)
+        skin_detector.scripts.display('img_skn', cv2.bitwise_and(img_col, img_col, mask=img_msk))
 
         waitkey = cv2.waitKey(5)
         if waitkey != -1:
