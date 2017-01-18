@@ -3,5 +3,6 @@
 __author__ = 'willbrennan'
 
 from SkinDetector import SkinDetector
+from scripts import display
 
-__all__ = ["SkinDetector"]
+__all__ = ["SkinDetector", "display"]

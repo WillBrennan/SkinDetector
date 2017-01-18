@@ -3,15 +3,13 @@
 __author__ = 'Will Brennan'
 
 # Built-in Modules
-import os
 import argparse
 import logging
-# Standard Modules
+import os
+
 import cv2
-import numpy
-# Custom Modules
-import scripts
-from SkinDetector import SkinDetector
+
+from SkinDetector import SkinDetector, scripts
 
 logger = logging.getLogger('main')
 
