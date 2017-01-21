@@ -38,5 +38,7 @@ install:
 script:
   - uname -a
   - pytest --version
+  - python -V
+  - which python
   - python -m pytest --version
   - make test
