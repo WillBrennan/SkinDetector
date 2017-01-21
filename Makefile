@@ -2,7 +2,7 @@ install:
 	pip install -r requirements.txt
 
 test:
-	pytest
+	python -m pytest tests/
 
 yapf:
 	find . -type f -name "*.py" | xargs yapf -i
