@@ -1,44 +1,22 @@
 language: python
 
-dist: trusty
-sudo: required
-
-before_script:
-  - export PATH=/usr/bin:$PATH
-  - sudo apt-get update -qq
-  - sudo apt-get install -yq python-dev python-numpy python-opencv
-  - sudo ln /dev/null /dev/raw1394
-  - python -c "import cv2; print cv2.__version__"
-
 matrix:
   include:
-
-    - python: "2.6"
     - python: "2.7"
-    - python: "3.2"
-    - python: "3.3"
-    - python: "3.4"
-    - python: "3.5"
-    - python: "3.5-dev"
-    - python: "3.6"
-    - python: "3.6-dev"
-    - python: "3.7"
-    - python: "nightly"
-  allow_failures:
-    - python: "3.2"
-    - python: "3.5-dev"
-    - python: "3.6"
-    - python: "3.6-dev"
-    - python: "3.7"
-    - python: "nightly"
+
+before_install:
+    # update aptitude
+    - sudo apt-get update
+    - sudo apt-get install -y python-opencv
+
+    # help python importing cv and/or cv2
+    - export PYTHONPATH=$PYTHONPATH:/usr/lib/pymodules/python$TRAVIS_PYTHON_VERSION
+
+    # verify all requirements were met
+    - INSTALLDIR=$(python -c "import os; import numpy; import cv; import cv2; print(os.path.dirname(cv2.__file__))")
 
 install:
-  - make install
+    - make install
 
 script:
-  - uname -a
-  - pytest --version
-  - python -V
-  - which python
-  - python -m pytest --version
-  - make test
+    - make test
