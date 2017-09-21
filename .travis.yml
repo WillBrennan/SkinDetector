@@ -13,7 +13,7 @@ before_install:
     - export PYTHONPATH=$PYTHONPATH:/usr/lib/pymodules/python$TRAVIS_PYTHON_VERSION
 
     # verify all requirements were met
-    - INSTALLDIR=$(python -c "import os; import numpy; import cv; import cv2; print(os.path.dirname(cv2.__file__))")
+    - INSTALLDIR=$(python -c "import os; import numpy; import cv2; print(os.path.dirname(cv2.__file__))")
 
 install:
     - make install
