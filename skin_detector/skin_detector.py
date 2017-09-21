@@ -42,8 +42,10 @@ def get_rgb_mask(img, debug=False):
     mask_a = cv2.inRange(img, lower_thresh, upper_thresh)
     mask_b = 255 * ((img[:, :, 2] - img[:, :, 1]) / 20)
     mask_c = 255 * ((numpy.max(img, axis=2) - numpy.min(img, axis=2)) / 20)
-
-    msk_rgb = cv2.bitwise_and(mask_c, cv2.bitwise_and(mask_a, mask_b))
+    # msk_rgb = cv2.bitwise_and(mask_c, cv2.bitwise_and(mask_a, mask_b))
+    mask_d = numpy.bitwise_and(numpy.uint64(mask_a), numpy.uint64(mask_b))
+    msk_rgb = numpy.bitwise_and(numpy.uint64(mask_c), numpy.uint64(mask_d))
+    
 
     msk_rgb[msk_rgb < 128] = 0
     msk_rgb[msk_rgb >= 128] = 1
