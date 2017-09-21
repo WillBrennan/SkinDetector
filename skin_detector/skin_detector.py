@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Will Brennan'
 
-# Built-in Modules
 import logging
 import cv2
 import numpy
-import scripts
+
+from . import scripts
 
 logger = logging.getLogger('main')
 
