@@ -2,12 +2,9 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Will Brennan'
 
-# Built-in Modules
-# Standard Modules
+
 import cv2
 import numpy
-
-# Custom Modules
 
 
 def display(title, img, max_size=200000):
