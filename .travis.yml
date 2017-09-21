@@ -7,13 +7,13 @@ matrix:
 before_install:
     # update aptitude
     - sudo apt-get update
-    - sudo apt-get install -y python-opencv
+    - sudo apt-get install python-opencv
 
-    # help python importing cv and/or cv2
+    # help python importing cv2
     - export PYTHONPATH=$PYTHONPATH:/usr/lib/pymodules/python$TRAVIS_PYTHON_VERSION
 
     # verify all requirements were met
-    - INSTALLDIR=$(python -c "import os; import numpy; import cv; import cv2; print(os.path.dirname(cv2.__file__))")
+    - INSTALLDIR=$(python -c import os; import numpy; import cv2)
 
 install:
     - make install
