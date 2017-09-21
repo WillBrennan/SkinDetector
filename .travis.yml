@@ -7,7 +7,7 @@ matrix:
 before_install:
     # update aptitude
     - sudo apt-get update
-    - sudo apt-get install -y python-opencv
+    - sudo apt-get install python-opencv
 
     # help python importing cv2
     - export PYTHONPATH=$PYTHONPATH:/usr/lib/pymodules/python$TRAVIS_PYTHON_VERSION
