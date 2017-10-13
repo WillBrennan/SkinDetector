@@ -4,32 +4,12 @@ __author__ = 'Will Brennan'
 
 import argparse
 import logging
-import os
+
 import cv2
+
 import skin_detector
 
 logger = logging.getLogger('main')
-
-
-def find_images(path, recursive=False, ignore=True):
-    if os.path.exists(path):
-        yield path
-    elif os.path.isdir(path):
-        assert os.path.isdir(path), 'FileIO - get_images: Directory does not exist'
-        assert isinstance(recursive, bool), 'FileIO - get_images: recursive must be a boolean variable'
-        ext, result = ['png', 'jpg', 'jpeg'], []
-        for path_a in os.listdir(path):
-            path_a = path + '/' + path_a
-            if os.path.isdir(path_a) and recursive:
-                for path_b in find_images(path_a):
-                    yield path_b
-            check_a = path_a.split('.')[-1] in ext
-            check_b = ignore or ('-' not in path_a.split('/')[-1])
-            if check_a and check_b:
-                yield path_a
-    else:
-        raise ValueError('error! path is not a valid path or directory')
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
@@ -48,7 +28,7 @@ if __name__ == '__main__':
     logger = logging.getLogger("main")
 
     for image_arg in args.image_paths:
-        for image_path in find_images(image_arg):
+        for image_path in skin_detector.find_images(image_arg):
             logging.info("loading image from {0}".format(image_path))
             img_col = cv2.imread(image_path, 1)
 

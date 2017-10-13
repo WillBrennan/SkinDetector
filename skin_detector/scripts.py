@@ -2,9 +2,30 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Will Brennan'
 
+import os
 
 import cv2
 import numpy
+
+
+def find_images(path, recursive=False, ignore=True):
+    if os.path.isfile(path):
+        yield path
+    elif os.path.isdir(path):
+        assert os.path.isdir(path), 'FileIO - get_images: Directory does not exist'
+        assert isinstance(recursive, bool), 'FileIO - get_images: recursive must be a boolean variable'
+        ext, result = ['png', 'jpg', 'jpeg'], []
+        for path_a in os.listdir(path):
+            path_a = path + '/' + path_a
+            if os.path.isdir(path_a) and recursive:
+                for path_b in find_images(path_a):
+                    yield path_b
+            check_a = path_a.split('.')[-1] in ext
+            check_b = ignore or ('-' not in path_a.split('/')[-1])
+            if check_a and check_b:
+                yield path_a
+    else:
+        raise ValueError('error! path is not a valid path or directory')
 
 
 def display(title, img, max_size=200000):
