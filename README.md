@@ -34,4 +34,8 @@ cv2.waitKey(0)
 ![Demo on Astronaut](https://raw.githubusercontent.com/WillBrennan/SkinDetector/master/docs/assets/demo.png "Demonstration")
 
 ## Based Upon
-[Skin Segmentation Using Multiple Thresholds](http://www.ivl.disco.unimib.it/papers2003/EI06-EI109%20Skin-paper.pdf)
+This repo is based upon the paper; 
+ - Skin Segmentation Using Multiple Thresholds (2003) - http://www.ivl.disco.unimib.it/papers2003/EI06-EI109%20Skin-paper.pdf
+ 
+ . Which is no longer accessiable; its similar to the technique used in the more modern paper, [Skin color segmentation using multi-color space threshold](https://www.semanticscholar.org/paper/Skin-color-segmentation-using-multi-color-space-Rahmat-Chairunnisa/c06873e619c679fd1aa7648a6e402a7d57ea0e20?tab=abstract&citingPapersSort=is-influential&citingPapersLimit=10&citingPapersOffset=0&year%5B0%5D=&year%5B1%5D=&citedPapersSort=is-influential&citedPapersLimit=10&citedPapersOffset=10).
+
