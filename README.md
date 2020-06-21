@@ -3,6 +3,8 @@
 
 # This project is depreciated and has been replaced by [SemanticSegmentation](https://github.com/WillBrennan/SemanticSegmentation)!!!!
 
+# Or [ObjectDetection](https://github.com/WillBrennan/ObjectDetection) if you want to find instances of skin!
+
 This is a high-speed python based skin detection system using OpenCV, it is done using adaptive thresholding, reference
 papers can be found below. It is designed for processing VGA sized images in real time for Gesture Control.
 
